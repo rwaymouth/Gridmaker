@@ -1,0 +1,57 @@
+$gutter: 1em;
+$gutter-mod: 2; // Simple way to change gutter proportions at smaller screen sizes.
+$grid-num: 12;
+$break: 30em;
+
+%cf {
+  &:after {
+    content:"";
+    display:table;
+    clear:both;
+  }
+}
+
+%group {
+  padding: $gutter/2;
+  @extend %cf;
+  @media (min-width: $break) {
+  padding: $gutter/(2*$gutter-mod);
+  }
+}
+
+%grid-base {
+  float: left;
+  margin: $gutter/(2*$gutter-mod);
+  @media (min-width: $break) {
+    width: calc(100% - (#{$gutter}/#{$gutter-mod}));
+    margin: $gutter/2;
+  }
+}
+
+@function build ($num) {
+  $grid: percentage($num/$grid-num);
+  @return calc(#{$grid} - (#{$gutter}/#{$gutter-mod}));
+
+}
+
+@function build-large ($num) {
+  $grid: percentage($num/$grid-num);
+  @return calc(#{$grid} - #{$gutter});
+}
+
+@mixin grid($m: $grid-num, $d:$grid-num  ) {
+  width: build($m);
+  @extend %grid-base;
+  @media (min-width: $break) {
+    width: build-large($d);
+  }
+}
+
+@mixin push-grid($m: 0, $d: 0 ) {
+  margin-left: build($m);
+  @if $m == 0 {margin-left: $gutter/(2*$gutter-mod);}
+  @media (min-width: $break) {
+  margin-left: build-large($d);
+  @if $d == 0 {margin-left: $gutter/2;}
+  }
+}
